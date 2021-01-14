@@ -1,0 +1,174 @@
+{% extends "bootstrap/base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block title %}
+Settings
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static', filename='settings.css')}}">
+{% endblock %}
+
+
+
+
+{%block content%}
+<!-- NAV -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="{{ url_for('dashboard') }}">Welcome, {{name}}!</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item ">
+            <a class="nav-link" href="{{ url_for('settings') }}">Settings <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('contact_me') }}">Contact</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('logout') }}">Log Out</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+<!-- Header -->
+    <div class="header">
+        <div class="overlay-image" style="background-image: url(./static/settings.jpg)"></div>
+        <div class="container2">
+             <h1>Settings</h1>
+        </div>
+    </div>
+
+<!-- Account settings -->
+<div class="container-fluid col-lg-9">
+    <form action="/settings" method="POST">
+        <div class="row">
+            <div class="col-lg-4">
+              <h1>Account Settings</h1>
+              <hr class="row" />
+            </div>
+        </div>
+        <div class="row">
+              {{ form.hidden_tag() }}
+              <div class="col-lg-6">
+                  <div class="form-group">
+                      {{ wtf.form_field(form.username, placeholder = name ) }}
+                  </div>
+              </div>
+              <div class="col-lg-6">
+                  <div class="form-group">
+                      {{ wtf.form_field(form.email, placeholder = email ) }}
+                  </div>
+              </div>
+              <div class="col-lg-6">
+                  <div class="form-group">
+                      {{ wtf.form_field(form.phone, placeholder = phone ) }}
+                  </div>
+              </div>
+              <div class="col-lg-6">
+                  <div class="form-group">
+                      {{ wtf.form_field(form.curr_password) }}
+                  </div>
+              </div>
+              <div class="col-lg-6">
+                  <div class="form-group">
+                      {{ wtf.form_field(form.new_password) }}
+                  </div>
+              </div>
+
+              <div class="col-lg-6">
+                  <div class="form-group">
+                      {{ wtf.form_field(form.confirm_password) }}
+                  </div>
+              </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4">
+              <h1>Alert Settings</h1>
+              <hr class="row" />
+            </div>
+        </div>
+
+        <div class="row">
+                <div class="col-lg-2">
+                  <div class="form-group">
+                      <input class="form-check-input" type="checkbox" id="email_alert" name = 'email_alert' value="email_alert" {% if email_alert == True %} checked {% endif %}>
+                      <label class="form-check-label" for="email_alert">Email Alert</label>
+                  </div>
+                </div>
+
+                <div class="col-lg-2">
+                  <div class="form-group">
+                      <input class="form-check-input" type="checkbox" id="phone_alert"name = 'phone_alert' value="phone_alert" {% if phone_alert == True %} checked {% endif %}>
+                      <label class="form-check-label" for="phone_alert">Phone Alert</label>
+                  </div>
+                </div>
+
+                <div class="col-lg-3">
+                  <div class="form-group">
+                    <label for="start-time">Alert Time:    </label>
+                    <select class="size-small" id="start-time-hr" name="alert_start_hr">
+                      <option value = "{{alert_start_hr}}" selected>{{alert_start_hr}}</option>
+                      <option>1</option>
+                      <option>2</option>
+                      <option>3</option>
+                      <option>4</option>
+                      <option>5</option>
+                      <option>6</option>
+                      <option>7</option>
+                      <option>8</option>
+                      <option>9</option>
+                      <option>10</option>
+                      <option>11</option>
+                      <option>12</option>
+                    </select>
+
+                    <select class="size-small" id="start-time-min" name="alert_start_min">
+                      <option value = "{{alert_start_min}}" selected>{{alert_start_min}}</option>
+                      <option>00</option>
+                      <option>05</option>
+                      <option>10</option>
+                      <option>15</option>
+                      <option>20</option>
+                      <option>25</option>
+                      <option>30</option>
+                      <option>35</option>
+                      <option>40</option>
+                      <option>45</option>
+                      <option>50</option>
+                      <option>55</option>
+                    </select>
+
+                    <select class="size-small" id="start-time_AP" name='alert_TOD'>
+                      <option selected>{%if alert_TOD == False %} A.M {%else%} P.M {%endif%}</option>
+                      <option>A.M</option>
+                      <option>P.M</option>
+                    </select>
+                  </div>
+                </div>
+          </div>
+          {% with messages = get_flashed_messages()%}
+          {% if messages %}
+              <p>{{messages[-1]}}</p>
+          {% endif%}
+          {%endwith%}
+          <button class="btn btn-primary" type="submit">Update Profile</button>
+    </form>
+</div>
+
+  
+  
+  
+
+
+
+    
+
+
+
+
+{%endblock%}

@@ -1,0 +1,104 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}
+Settings
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static', filename='contact_me.css')}}">
+{% endblock %}
+
+
+
+
+{%block content%}
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{{ url_for('dashboard') }}">Welcome, {{name}}!</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item ">
+                    <a class="nav-link" href="{{ url_for('settings') }}">Settings <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                     <a class="nav-link" href="{{ url_for('contact_me') }}">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('logout') }}">Log Out</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="header">
+        <div class="overlay-image" style="background-image: url(./static/header.jpg)"></div>
+        <div class="container2">
+             <h1>About Me</h1>
+        </div>
+    </div>
+
+    <div class="container1">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                {% if success %}
+                <div class="alert alert-success" role="alert">
+                Your message has been sent successfully!
+                </div>
+                {% endif %}
+        <div class="container3">
+            <div class="starter-template">
+                <h2>About the Creator</h2>
+                <hr class="row" />
+                <p class="lead">
+                Hello and Welcome to my very first web-app! My name is Junhyx Fetero and I am currently a 2nd year studying Computer Science at Illinois Institute of Technology. Being that this is my very first web-app and my very first time using flask, this web-app is very sub-par. It took me around a full week long creating this web-app. After many very frustrating days of trying to figure out HTML, CSS, and flask, trying to fix many bugs, and scouring the internet for hours on end just trying to make my code work, I am very excited to present you this simple web-app that has a login feature and an alert-messaging feature (which I am very proud of) to help you get your day started on the right track.<br> <br> If you have any comments, concerns, or questions shoot me a message by filling out the form below and I will get back to you ASAP. Thank you! 
+                </p>
+                <hr class="row" />
+            </div>
+        </div>
+
+        <form name="sentMessage" id="contactForm" method="POST">
+          <div class="control-group">
+            <div class="form-group floating-label-form-group controls">
+              <label>Name</label>
+              <input type="text" class="form-control" placeholder="Name" id="name" name="name" required data-validation-required-message="Please enter your name.">
+              <p class="help-block text-danger"></p>
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="form-group floating-label-form-group controls">
+              <label>Email Address</label>
+              <input type="email" class="form-control" placeholder="Email Address" id="email" name="email" required data-validation-required-message="Please enter your email address.">
+              <p class="help-block text-danger"></p>
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="form-group col-xs-12 floating-label-form-group controls">
+              <label>Subject</label>
+              <input type="text" class="form-control" placeholder="Subject" id="subject" name="subject" required data-validation-required-message="Please enter a subject.">
+              <p class="help-block text-danger"></p>
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="form-group floating-label-form-group controls">
+              <label>Message</label>
+              <textarea rows="5" class="form-control" placeholder="Message" id="message" name="message" required data-validation-required-message="Please enter a message."></textarea>
+              <p class="help-block text-danger"></p>
+            </div>
+          </div>
+          <hr class="row" />
+          <div id="success"></div>
+          <button type="submit" class="btn btn-primary" id="sendMessageButton">Send</button>
+            </form>
+          </div>
+        </div>
+     </div>
+
+
+
+
+
+{%endblock%}

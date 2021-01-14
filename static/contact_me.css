@@ -1,0 +1,34 @@
+body{
+	font-family:Lora,'Times New Roman';
+	background-color: #DCDCDC !important;
+}
+.header{
+	color: white;
+	position: relative;
+	background: #000;
+	width: 100%;
+	height: 400px;
+	background-position: center;
+    background-size: cover;
+}
+.overlay-image{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-position: center;
+    background-size: cover;
+    opacity: 0.65;
+}
+
+.container1{
+	padding: 50px;
+	position: relative;
+}
+.container2{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
