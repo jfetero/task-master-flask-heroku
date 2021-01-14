@@ -55,8 +55,6 @@ def phone_alerts(number, subject,body):
 	return email_alerts(subject, body, f'{number}{temp}')
 
 
-
-if __name__ == '__main__':
 	
 
 
