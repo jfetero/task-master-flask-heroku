@@ -381,7 +381,7 @@ def send_alerts():
 		elif user.phone_alert and not user.email_alert:
 			sched.add_job(lambda: p_alerts(phone, 'To-Do', tasks), 'cron', day_of_week='mon-sun', hour=hr, minute=mins)
 
-	sched = BlockingScheduler()
+		sched = BlockingScheduler()
 
 	
 
