@@ -374,17 +374,18 @@ def send_alerts():
 		mins = int(user.alert_start_min)
 
 		if user.phone_alert and user.email_alert:
-			sched.add_job(lambda: e_alerts('To-do', tasks, email), 'cron', day_of_week='mon-fri', hour=hr, minute=mins)
-			sched.add_job(lambda: p_alerts(phone, 'To-Do', tasks), 'cron', day_of_week='mon-fri', hour=hr, minute=mins)
+			sched.add_job(lambda: e_alerts('To-do', tasks, email), 'cron', day_of_week='mon-sun', hour=hr, minute=mins)
+			sched.add_job(lambda: p_alerts(phone, 'To-Do', tasks), 'cron', day_of_week='mon-sun', hour=hr, minute=mins)
 		elif user.email_alert and not user.phone_alert:
-			sched.add_job(lambda: e_alerts('To-do', tasks, email), 'cron', day_of_week='mon-fri', hour=hr, minute=mins)
+			sched.add_job(lambda: e_alerts('To-do', tasks, email), 'cron', day_of_week='mon-sun', hour=hr, minute=mins)
 		elif user.phone_alert and not user.email_alert:
-			sched.add_job(lambda: p_alerts(phone, 'To-Do', tasks), 'cron', day_of_week='mon-fri', hour=hr, minute=mins)
+			sched.add_job(lambda: p_alerts(phone, 'To-Do', tasks), 'cron', day_of_week='mon-sun', hour=hr, minute=mins)
+
+	sched = BlockingScheduler()
 
 	
 
 result = q.enqueue(send_alerts)
-sched = BlockingScheduler()
 
 #========================== MAIN ===========================================
 if __name__ == "__main__":
