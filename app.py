@@ -15,6 +15,7 @@ from alert_program import email_alerts as e_alerts, phone_alerts as p_alerts
 import redis
 from rq import Queue
 from worker import conn
+from apscheduler.schedulers.blocking import BlockingScheduler
 
 
 app = Flask(__name__)
@@ -27,6 +28,7 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 q = Queue(connection=conn)
+
 
 
 
@@ -95,9 +97,8 @@ class User(UserMixin, db.Model):
 	phone = db.Column(db.String(16))
 	email_alert = db.Column(db.Boolean)
 	phone_alert = db.Column(db.Boolean)
-	alert_start_hr = db.Column(db.Integer)
+	alert_start_hr = db.Column(db.String(2))
 	alert_start_min = db.Column(db.String(2))
-	alert_TOD = db.Column(db.Boolean)
 	tasks = db.relationship('Tasks', backref = 'owner')
 
 	def __repr__(self):
@@ -261,19 +262,6 @@ def settings():
 			except:
 				return redirect('/settings')
 
-		if request.form['alert_TOD'] == 'A.M':
-			user.alert_TOD = False
-			try:
-				db.session.commit()
-			except:
-				return redirect('/settings')
-		else:
-			user.alert_TOD = True
-			try:
-				db.session.commit()
-			except:
-				return redirect('/settings')
-
 		return redirect('/settings')
 	else:
 		content = {
@@ -284,7 +272,6 @@ def settings():
 			'email_alert': current_user.email_alert,
 			'alert_start_hr' : current_user.alert_start_hr,
 			'alert_start_min' : current_user.alert_start_min,
-			'alert_TOD': current_user.alert_TOD,
 			'form' : form
 		}
 		return render_template('settings.html', **content)
@@ -311,7 +298,7 @@ def signup():
 		user = form.username.data
 		em = form.email.data
 		hashed = generate_password_hash(form.password.data, method = 'sha256')
-		new_user = User(username = user, email = em, password = hashed, phone = form.phone.data, email_alert = False, phone_alert = False, alert_start_hr = 10, alert_start_min = '00', alert_TOD = False )
+		new_user = User(username = user, email = em, password = hashed, phone = form.phone.data, email_alert = False, phone_alert = False, alert_start_hr = '10', alert_start_min = '00')
 		try:	
 			db.session.add(new_user)
 			db.session.commit()
@@ -383,36 +370,21 @@ def send_alerts():
 		email = user.email
 		phone = ''.join([i for i in user.phone if i !='-'])
 		tasks = '\n'.join([task.content for task in user.tasks if task.complete == False])
-		if user.alert_TOD == False and user.alert_start_hr == 12:
-			start = f'00:{user.alert_start_min}'
-		elif user.alert_TOD == False:
-			if user.alert_start < 10:
-				start = f'0{user.alert_start}:{user.alert_start_min}'
-			else:
-				start = f'{user.alert_start}:{user.alert_start_min}'
-		elif user.alert_TOD == True and user.alert_start_hr == 12:
-			start = f'12:{user.alert_start_min}'
-		elif user.alert_TOD:
-			start = str(user.alert_start_hr + 12)
-			start = f'{start}:{user.alert_start_min}'
-		
+		hr = int(user.alert_start_hr)
+		mins = int(user.alert_start_min)
 
 		if user.phone_alert and user.email_alert:
-			schedule.every().day.at(f'{start}').do(lambda: e_alerts('To-do', tasks, email))
-			schedule.every().day.at(f'{start}').do(lambda: p_alerts(phone, 'To-Do', tasks))
+			sched.add_job(lambda: e_alerts('To-do', tasks, email), 'cron', day_of_week='mon-fri', hour=hr, minute=mins)
+			sched.add_job(lambda: p_alerts(phone, 'To-Do', tasks), 'cron', day_of_week='mon-fri', hour=hr, minute=mins)
 		elif user.email_alert and not user.phone_alert:
-			schedule.every().day.at(f'{start}').do(lambda: e_alerts('To-Do', tasks, email))
+			sched.add_job(lambda: e_alerts('To-do', tasks, email), 'cron', day_of_week='mon-fri', hour=hr, minute=mins)
 		elif user.phone_alert and not user.email_alert:
-			schedule.every().day.at(f'{start}').do(lambda: p_alerts(phone, 'To-Do', tasks))
+			sched.add_job(lambda: p_alerts(phone, 'To-Do', tasks), 'cron', day_of_week='mon-fri', hour=hr, minute=mins)
 
 	
-		while True:
-			schedule.run_pending()
-			time.sleep(1)
 
 result = q.enqueue(send_alerts)
-
-
+sched = BlockingScheduler()
 
 #========================== MAIN ===========================================
 if __name__ == "__main__":
