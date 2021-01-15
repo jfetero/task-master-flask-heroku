@@ -12,6 +12,9 @@ import phonenumbers
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from alert_program import email_alerts as e_alerts, phone_alerts as p_alerts
+import redis
+from rq import Queue
+from worker import conn
 
 
 app = Flask(__name__)
@@ -22,6 +25,8 @@ Bootstrap(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+q = Queue(connection=conn)
 
 
 
@@ -404,13 +409,12 @@ def send_alerts():
 		while True:
 			schedule.run_pending()
 			time.sleep(1)
-			
+
+result = q.enqueue(send_alerts, 'http://heroku.com')
 
 
-# threading.Thread(target=send_alerts).start()
-send_alerts()
-app.run(debug = False)
+
 #========================== MAIN ===========================================
-# if __name__ == "__main__":
-# 	threading.Thread(target=send_alerts).start()
-# 	app.run(debug=True)
+if __name__ == "__main__":
+	# threading.Thread(target=send_alerts).start()
+	app.run(debug=False)

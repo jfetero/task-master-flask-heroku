@@ -1,2 +1,2 @@
 web: gunicorn --bind 0.0.0.0:$PORT app:app
-clock: python alerts.py
+worker: python worker.py

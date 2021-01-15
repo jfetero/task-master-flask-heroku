@@ -3,11 +3,12 @@ import schedule
 import time
 from alert_program import email_alerts as e_alerts, phone_alerts as p_alerts
 import phonenumbers
-from apscheduler.schedulers.blocking import BlockingScheduler
+# from apscheduler.schedulers.blocking import BlockingScheduler
 
-sched = BlockingScheduler()
+# sched = BlockingScheduler()
 
-@sched.scheduled_job('interval', seconds=1)
+# @sched.scheduled_job('interval', seconds=1)
+
 def send_alerts():
 	'''
 		Background Process handled by threads
@@ -44,5 +45,3 @@ def send_alerts():
 		while True:
 			schedule.run_pending()
 			time.sleep(1)
-
-sched.start()
