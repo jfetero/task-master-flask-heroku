@@ -410,7 +410,7 @@ def send_alerts():
 			schedule.run_pending()
 			time.sleep(1)
 
-result = q.enqueue(send_alerts, 'http://heroku.com')
+result = q.enqueue(send_alerts)
 
 
 
