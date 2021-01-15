@@ -407,8 +407,9 @@ def send_alerts():
 			
 
 
-	
+threading.Thread(target=send_alerts).start()
+app.run(debug = False)
 #========================== MAIN ===========================================
-if __name__ == "__main__":
-	threading.Thread(target=send_alerts).start()
-	app.run(debug=True)
+# if __name__ == "__main__":
+# 	threading.Thread(target=send_alerts).start()
+# 	app.run(debug=True)
