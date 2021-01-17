@@ -14,7 +14,7 @@ from rq import Queue
 from worker import conn
 from apscheduler.schedulers.blocking import BlockingScheduler
 import os
-
+import psycopg2
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret'
