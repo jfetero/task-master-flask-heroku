@@ -1,9 +1,6 @@
 from flask import Flask, render_template, url_for, request, redirect,flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc
-import schedule
-import time 
-import threading
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, ValidationError
@@ -16,11 +13,12 @@ import redis
 from rq import Queue
 from worker import conn
 from apscheduler.schedulers.blocking import BlockingScheduler
+import os
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user-tasks.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 db = SQLAlchemy(app)
 Bootstrap(app)
 login_manager = LoginManager()
@@ -28,8 +26,6 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 q = Queue(connection=conn)
-
-
 
 
 #===================== CLASSES ======================
@@ -365,7 +361,7 @@ def send_alerts():
 		Background Process handled by threads
 	'''
 	users = User.query.filter_by(email_alert = True, phone_alert =True).all()
-
+	sched = BlockingScheduler()
 	for user in users:
 		email = user.email
 		phone = ''.join([i for i in user.phone if i !='-'])
@@ -381,7 +377,7 @@ def send_alerts():
 		elif user.phone_alert and not user.email_alert:
 			sched.add_job(lambda: p_alerts(phone, 'To-Do', tasks), 'cron', day_of_week='mon-sun', hour=hr, minute=mins)
 
-		sched = BlockingScheduler()
+		sched.start()
 
 	
 
