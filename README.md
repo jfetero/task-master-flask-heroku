@@ -14,6 +14,7 @@ The 2 main reasons why I chose to do this project is because I was always intere
 ## What I learned?
 
 I honestly learned a lot during the process of creating this project. I had zero HTML, CSS and FLask knowledge prior to this project. I just learned as I went through the struggle trying to make the app work. It took me about a full week just creating the app and then a couple more days deploying it, because I also did not know how to use Heroku and I needed to tweak a little more than I wanted to with the code. Even though I struggled even at the end of me creating this app, I am thankful for all the available resources around the web that help me pull this project off. Here is a list of things I learned making this this app.
+	
 	- Flask
 	- Sqlite3
 	- Bootstrap
