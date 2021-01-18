@@ -372,9 +372,9 @@ def send_alerts():
 		if user.phone_alert and user.email_alert:
 			sched.add_job(lambda: e_alerts('To-do', tasks, email), 'cron', day_of_week='mon-sun', hour=hr, minute=mins)
 			sched.add_job(lambda: p_alerts(phone, 'To-Do', tasks), 'cron', day_of_week='mon-sun', hour=hr, minute=mins)
-		elif user.email_alert and not user.phone_alert:
+		if user.email_alert and not user.phone_alert:
 			sched.add_job(lambda: e_alerts('To-do', tasks, email), 'cron', day_of_week='mon-sun', hour=hr, minute=mins)
-		elif user.phone_alert and not user.email_alert:
+		if user.phone_alert and not user.email_alert:
 			sched.add_job(lambda: p_alerts(phone, 'To-Do', tasks), 'cron', day_of_week='mon-sun', hour=hr, minute=mins)
 
 		sched.start()
