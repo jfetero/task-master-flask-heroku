@@ -360,24 +360,26 @@ def send_alerts():
 	'''
 		Background Process handled by threads
 	'''
-	users = User.query.filter_by(email_alert = True, phone_alert =True).all()
+	email_users = User.query.filter_by(email_alert = True).all()
+	phone_users = User.query.filter_by(phone_alert =True).all()
 	sched = BlockingScheduler()
-	for user in users:
+
+	for user in email_users:
 		email = user.email
+		tasks = '\n'.join([task.content for task in user.tasks if task.complete == False])
+		hr = int(user.alert_start_hr)
+		mins = int(user.alert_start_min)
+		sched.add_job(lambda: e_alerts('To-do', tasks, email), 'cron', day_of_week='mon-sun', hour=hr, minute=mins)
+
+
+	for user in phone_users:
 		phone = ''.join([i for i in user.phone if i !='-'])
 		tasks = '\n'.join([task.content for task in user.tasks if task.complete == False])
 		hr = int(user.alert_start_hr)
 		mins = int(user.alert_start_min)
+		sched.add_job(lambda: p_alerts(phone, 'To-Do', tasks), 'cron', day_of_week='mon-sun', hour=hr, minute=mins)
 
-		if user.phone_alert and user.email_alert:
-			sched.add_job(lambda: e_alerts('To-do', tasks, email), 'cron', day_of_week='mon-sun', hour=hr, minute=mins)
-			sched.add_job(lambda: p_alerts(phone, 'To-Do', tasks), 'cron', day_of_week='mon-sun', hour=hr, minute=mins)
-		if user.email_alert and not user.phone_alert:
-			sched.add_job(lambda: e_alerts('To-do', tasks, email), 'cron', day_of_week='mon-sun', hour=hr, minute=mins)
-		if user.phone_alert and not user.email_alert:
-			sched.add_job(lambda: p_alerts(phone, 'To-Do', tasks), 'cron', day_of_week='mon-sun', hour=hr, minute=mins)
-
-		sched.start()
+	sched.start()
 
 	
 
